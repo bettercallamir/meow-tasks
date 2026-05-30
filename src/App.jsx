@@ -61,8 +61,8 @@ function App() {
               <div class={`h-[100dvh] w-full p-2 `}>
                 <ol class={`h-[60dvh] w-full  bg-[#D9D9D9] rounded-xl px-2 `}>
                       {files ?
-                        files.map((i,item)=>(
-                          <span></span><li class={`py-1`}>{item.name}</li>
+                        files.map((item,i)=>(
+                          <div class={`flex items-center gap-x-3`}><>{i}</><li class={`py-1`}>{item.name}</li></div>
                         ))
                         : <li>Loading</li>
                       }
