@@ -7,6 +7,8 @@ function App() {
   const inputRef = useRef();
   const [fileName,setFileName] = useState('No file choosen...');
   const [files , setFiles] = useState(); 
+  const [totalSpace, setTotalSpace] = useState();
+  const [freeSpace, setFreeSpace] = useState();
   const url = "http://192.168.43.117/"
   useEffect(()=>{
     async function fetchData(){
@@ -18,6 +20,8 @@ function App() {
 
         const data = await res.json();
         setFiles(data['files'])
+        setFreeSpace(data['free'])
+        setTotalSpace(data['total'])
         console.log(data)
       } catch(err){
         console.log(err.message)
@@ -58,15 +62,63 @@ function App() {
 
 
               </div>
-              <div class={`h-[100dvh] w-full p-2 `}>
-                <ol class={`h-[60dvh] w-full  bg-[#D9D9D9] rounded-xl px-2 `}>
-                      {files ?
+              <div class={`h-[100dvh] w-full p-2`}>
+            
+                  <div class={`h-[50dvh] w-full  bg-[#D9D9D9] rounded-xl px-2 overflow-y-auto mb-2`}>
+                    {files ?
                         files.map((item,i)=>(
-                          <div class={`flex items-center gap-x-3`}><>{i}</><li class={`py-1`}>{item.name}</li></div>
+                          <div
+                            key={i}
+                            className={`grid grid-cols-[1fr_100px_80px] items-center w-full py-1 border-b border-gray-400 text-gray-600 cursor-pointer  ${i%2==0 ? "" : "bg-gray-400"}`}
+                          >
+                              <div>
+                                <span className={`px-2 border-r border-gray-400 `}>{i}</span>
+                                <span className='pl-2'>{item.name}</span>
+                                {item.name.includes("html")&&<span className='text-[10px] text-orange-500 font-bold ml-2'> 
+                                          HTML
+                                  </span>}
+                                {item.name.includes("js")&&<span className='text-[10px] text-yellow-500 font-bold ml-2'> 
+                                          Js
+                                  </span>}
+                                {item.name.includes("py")&&<span className='text-[10px] text-green-500 font-bold ml-2'> 
+                                          PYTHON
+                                  </span>}
+                              
+                              </div>
+                                
+                                <div className="text-left">
+                                      {!item.isDir && item.size+" Kb"}
+                                </div>
+                              {!item.isDir&&
+                                <div className='text-right text-red-700 cursor-pointer'>
+                                  Delete
+                                </div>
+                              }
+                          
+                          </div>
                         ))
-                        : <li>Loading</li>
-                      }
-                </ol>
+                        : <div>Loading</div>
+                      }  
+                </div>
+                <div className={`flex items-center justify-between bg-[#D9D9D9] w-full h-[10dvh] rounded-xl p-4 text-gray-600 text-sm`}>
+                      <div className='flex items-center'>
+                          <div className='bg-[#FF8800] h-[10px] w-[10px] rounded-full mr-1 '>
+                          </div>
+                          <p>used space : {(totalSpace - freeSpace)/1024}Kb</p>
+                          
+                          <div className='bg-[#4099FF] h-[10px] w-[10px] rounded-full ml-2 mr-2 '>
+                        </div>
+                        <p>free space : {freeSpace/1024}Kb</p>
+
+                         
+                      <div className='bg-gray-400 h-[10px] w-[10px] ml-2 mr-2 rounded-xl'>
+                      </div>
+                      <p>total space : {totalSpace/1024}Kb</p>
+                      </div>
+
+
+                </div>
+ 
               </div>
 
         </div>
